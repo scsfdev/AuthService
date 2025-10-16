@@ -4,7 +4,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# ---------- Build AuthService ----------
+# ---------- 1. Build Shared.Events ----------
+COPY Shared.Events/Shared.Events.sln Shared.Events/
+COPY Shared.Events/Shared.Events/Shared.Events.csproj Shared.Events/Shared.Events/
+COPY Shared.Events/Shared.Events/ Shared.Events/Shared.Events/
+
+# Build Shared.Events
+RUN dotnet publish Shared.Events/Shared.Events/Shared.Events.csproj -c Release -o Shared.Events/Shared.Events/bin/Release/net9.0 --no-self-contained
+
+
+# ---------- 2. Build AuthService ----------
 # Copy solution and project files for restore caching
 COPY AuthService/AuthService.sln AuthService/
 COPY AuthService/AuthService.Api/AuthService.Api.csproj AuthService/AuthService.Api/
